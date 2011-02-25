@@ -61,6 +61,7 @@ class TopClient(object):
         
     def process_data(self, rsp):
         # 获得有效数据数据
+        # TODO it's a right way!
         return rsp.values()[0].values()[0]
 
     def res2dict(self, res):
