@@ -1,4 +1,8 @@
 # coding: utf-8
+'''
+    :copyright: (c) 2010 by Armin Ronacher and contributors. 
+    :license: BSD, see LICENSE for more details.   
+'''
 
 import os, sys, urllib, urllib2, time, hashlib, json, logging
 from logging.handler import SMTPHandler, RotatingFileHandler
