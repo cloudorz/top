@@ -1,8 +1,4 @@
 # coding: utf-8
-'''
-    :copyright: (c) 2010 by Armin Ronacher and contributors. 
-    :license: BSD, see LICENSE for more details.   
-'''
 
 import os, sys, urllib, urllib2, time, hashlib, json, logging
 from logging.handler import SMTPHandler, RotatingFileHandler
@@ -10,6 +6,7 @@ from logging.handler import SMTPHandler, RotatingFileHandler
 from .parsexml import xml2dict
 
 ROOT_DIR = os.path.dirname(os.path.abspath(__name__))
+DEBUG = True
 
 class TopClient(object):
     ''' client for send request for TOP
@@ -45,28 +42,32 @@ class TopClient(object):
         return hashlib.md5(src).hexdigest().upper()
 
     def config_logger(self):
-        formatter = logging.Formatter(
-            '%(asctime)s %(levelname)s: %(message)s ',
-            '[in %(pathname)s:%(lineno)d]')
+        formatter = logging.Formatter('%(asctime)s %(levelname)s: %(message)s')
         debug_handler = RotatingFileHandler(self.log_file, maxBytes=10000, backupCount=5)
         debug_handler.setLevel(logging.DEBUG)
-        debug_handler.setFormatter(debug_handler)
+        debug_handler.setFormatter(formatter)
         self.logger.addHandler(debug_handler)
 
-    def log_error(self, api_name, url, error_code, response_text):
-        # TODO 系统错误日志
-        self.logger.log('')
+    def log_communication_error(self, error_code, response_text):
+        msg = 'the top communication error, error_no:%s, error message:%s' % (erorr_code, response_text)
+        if DEBUG:
+            print >> sys.stderr, msg
+        self.logger.error(msg)
 
-    def process_error(self, rsp)
+    def log_error(self, msg):
+        if DEBUG:
+            print >> sys.stderr, msg
+        self.logger.debug(msg)
+
+    def process_error(self, rsp):
         if 'error_response' in rsp:
-            self.log_error(rsp['error_response']['code'], rsp['error_response']['msg'])
-        else:
+            self.log_communication_error(rsp['error_response']['code'], rsp['error_response']['msg'])
             return True
         
     def process_data(self, rsp):
         # 获得有效数据数据
         # TODO it's a right way!
-        return rsp.values()[0].values()[0]
+        return rsp[self.method.replace('.', '_')].values()[0]
 
     def res2dict(self, res):
         if self.format == 'json':
@@ -124,12 +125,11 @@ class TopClient(object):
         try:
             req = urllib2.urlopen(self.base_url, form_dict)
         except Exception, e:
-            self.log_error(e)
-            return
+            self.log_error(e.message)
+            return 
 
         rsp = self.res2dict(req.read())
         if self.process_error(rsp):
-            return 
+            return
 
         return self.process_data(rsp, request.get_data)
-

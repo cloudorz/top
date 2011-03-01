@@ -1,7 +1,4 @@
 # coding: utf-8
-'''
-the base class of all request for top api 
-'''
 
 from abc import ABCMeta, abstractmethod
 
