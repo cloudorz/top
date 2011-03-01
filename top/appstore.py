@@ -6,6 +6,8 @@ class SubscribeGetRequest(Request):
     def __init__(self):
         self.lease_id = None
         self.nick = None
+        self.method = 'taobao.appstore.subscribe.get'
+        self.data_path = 'appstore_subscribe_get_response.user_subscribe'
         self.p = {}
 
     def set_lease_id(self, lease_id):
@@ -17,11 +19,7 @@ class SubscribeGetRequest(Request):
         self.p['nick'] = nick
 
     def get_api_method_name(self):
-        return 'taobao.appstore.subscribe.get'
+        return self.method
     
     def get_api_params(self):
         return self.p
-
-    def get_data(self, rsp):
-        # TODO 
-        return rsp

@@ -1,11 +1,13 @@
 # coding: utf-8
 
-import os, sys, urllib, urllib2, time, hashlib, json, logging
-from logging.handler import SMTPHandler, RotatingFileHandler
+import os, sys, urllib, urllib2, time, hashlib, json, logging, datetime
+from logging.handlers import SMTPHandler, RotatingFileHandler
+
 
 from .parsexml import xml2dict
+from .user import UserGetRequest
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__name__))
+ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEBUG = True
 
 class TopClient(object):
@@ -15,8 +17,8 @@ class TopClient(object):
         # system args 
         self.app_key = 'test'
         self.app_secret = 'test'
-        self.base_url = 'http://gw.api.tabobao.com/router/rest'
-        self.test_url = 'http://gw.sandbox.tabobao.com/router/rest'
+        self.base_url = 'http://gw.api.taobao.com/router/rest'
+        #self.base_url = 'http://gw.api.tbsandbox.com/router/rest'
         self.format = 'json'
         self.sign_method = 'md5'
         self.api_version = '2.0'
@@ -38,7 +40,9 @@ class TopClient(object):
                 except AttributeError:
                     pass
 
-        src = self.app_secret + ''.join('%s%s' % (k,v) for k,v in sorted(params.items()))
+        src = '%s%s%s' % (self.app_secret,
+                ''.join('%s%s' % e for e in sorted(params.items())),
+                self.app_secret)
         return hashlib.md5(src).hexdigest().upper()
 
     def config_logger(self):
@@ -49,7 +53,7 @@ class TopClient(object):
         self.logger.addHandler(debug_handler)
 
     def log_communication_error(self, error_code, response_text):
-        msg = 'the top communication error, error_no:%s, error message:%s' % (erorr_code, response_text)
+        msg = 'the top communication error, error_no:%s, error message:%s' % (error_code, response_text)
         if DEBUG:
             print >> sys.stderr, msg
         self.logger.error(msg)
@@ -64,26 +68,28 @@ class TopClient(object):
             self.log_communication_error(rsp['error_response']['code'], rsp['error_response']['msg'])
             return True
         
-    def process_data(self, rsp):
+    def process_data(self, rsp, path):
         # 获得有效数据数据
-        # TODO it's a right way!
-        return rsp[self.method.replace('.', '_')].values()[0]
+        for e in path.split('.'):
+            rsp = rsp[e]
+        return rsp
 
     def res2dict(self, res):
         if self.format == 'json':
             # json 格式的处理
             try:
                 res = json.loads(res)
-            except AttributeError,e:
-                self.log_error(e)
-                return
+            except (ValueError, AttributeError),e:
+                self.log_error('parse json data have errors')
+                res = {}
 
         elif self.format == 'xml':
             # xml 格式的处理
             try:
                 res = xml2dict(res)
             except Exception, e:
-                self.log_error(e)
+                self.log_error('parse xml data have errors')
+                res = {}
         else:
             res = {}
             self.log_error(u'返回了不支持的数据格式')
@@ -104,7 +110,7 @@ class TopClient(object):
     def req_params(self):
         params = {}
         params.update(self.sys_params)
-        params.udpate(self.api_params)
+        params.update(self.api_params)
         return params
 
     def execute(self, request, session=None):
@@ -112,7 +118,7 @@ class TopClient(object):
         self.api_params = request.get_api_params()
 
         # 组装系统参数
-        sef.set_sys_params()
+        self.set_sys_params()
 
         if session:
             self.sys_params['session'] = session
@@ -124,12 +130,11 @@ class TopClient(object):
         form_dict = urllib.urlencode(self.req_params())
         try:
             req = urllib2.urlopen(self.base_url, form_dict)
-        except Exception, e:
-            self.log_error(e.message)
-            return 
+        except urllib2.HTTPError, e:
+            self.log_error('have some error in req/resp')
 
         rsp = self.res2dict(req.read())
         if self.process_error(rsp):
             return
 
-        return self.process_data(rsp, request.get_data)
+        return self.process_data(rsp, request.data_path)
