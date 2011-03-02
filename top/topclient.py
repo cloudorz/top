@@ -13,10 +13,10 @@ DEBUG = True
 class TopClient(object):
     ''' client for send request for TOP
     '''
-    def __init__(self, logger=None):
+    def __init__(self, key='test', secret='test', logger=None):
         # system args 
-        self.app_key = 'test'
-        self.app_secret = 'test'
+        self.app_key = key
+        self.app_secret = secret
         self.base_url = 'http://gw.api.taobao.com/router/rest'
         #self.base_url = 'http://gw.api.tbsandbox.com/router/rest'
         self.format = 'json'
