@@ -7,8 +7,12 @@ from logging.handlers import SMTPHandler, RotatingFileHandler
 from .parsexml import xml2dict
 from .user import UserGetRequest
 
-ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEBUG = True
+
+#ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
+LOG_DIR = '/tmp/toplogs'
+if not os.path.isdir(LOG_DIR):
+    os.mkdir(LOG_DIR)
 
 class TopClient(object):
     ''' client for send request for TOP
@@ -26,7 +30,7 @@ class TopClient(object):
         self.code_type = 'Python'
         
         # logger
-        self.log_file = os.path.join(ROOT_DIR, 'logs/error.log')
+        self.log_file = os.path.join(LOG_DIR, 'error.log')
         self.logger = logger or logging.getLogger()
         self.config_logger()
 
