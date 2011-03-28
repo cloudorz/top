@@ -5,13 +5,14 @@ from abc import ABCMeta, abstractmethod
 class Request(object):
     __metaclass__ = ABCMeta
 
-    @abstractmethod
     def get_api_method_name(self):
-        pass
+        return self.method
     
-    @abstractmethod
     def get_api_params(self):
-        pass
+        return self.p
+
+    def get_data_path(self):
+        return '_'.join(self.method.split('.')[1:]+['response'])
 
     #@abstractmethod
     #def get_data(self, rsp):

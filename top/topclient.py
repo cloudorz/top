@@ -131,7 +131,7 @@ class TopClient(object):
         self.sys_params['sign'] = self.generate_sign(self.req_params())
 
         # 发送请求
-        form_dict = urllib.urlencode(self.req_params())
+        form_dict = urllib.urlencode(dict((k, v.encode('utf-8')) for k,v in self.req_params().items()))
         try:
             req = urllib2.urlopen(self.base_url, form_dict)
         except urllib2.HTTPError, e:
@@ -141,4 +141,4 @@ class TopClient(object):
         if self.process_error(rsp):
             return
 
-        return self.process_data(rsp, request.data_path)
+        return self.process_data(rsp, request.get_data_path())
