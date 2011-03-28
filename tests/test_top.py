@@ -37,6 +37,7 @@ class TestTopRequest(unittest.TestCase):
         r.set_nick('mydewdew')
 
         rsp = c.execute(r)
+        pp.pprint(rsp)
         self.assertTrue(rsp and 'user_subscribe' in rsp and 'status' in rsp['user_subscribe'])
 
     def test_shipping_trace_search(self):

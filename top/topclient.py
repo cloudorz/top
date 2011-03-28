@@ -1,11 +1,9 @@
 # coding: utf-8
 
-import os, sys, urllib, urllib2, time, hashlib, json, logging, datetime
+import os, sys, urllib, urllib2, hashlib, json, logging, datetime
 from logging.handlers import SMTPHandler, RotatingFileHandler
 
-
 from .parsexml import xml2dict
-from .user import UserGetRequest
 
 DEBUG = True
 
