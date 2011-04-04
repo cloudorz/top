@@ -7,7 +7,6 @@ class TradeGetRequest(Request):
         self.fields = None # Trade 的相关字段包括Order
         self.tid = None # 交易单号
         self.method = 'taobao.trade.get'
-        self.data_path = '_'.join(self.method.split('.')[1:]+['response'])
         self.p = {}
 
     def set_fields(self, fields):
@@ -69,3 +68,55 @@ class TradesBoughtGetRequest(Request):
     def set_rate_status(self, rs):
         self.rate_status = rs
         self.p['rate_status'] = rs
+
+class TradeShippingaddressUpdate(Request):
+    def __init__(self):
+        self.tid = None
+        # optional
+        self.receiver_name = None
+        self.receiver_mobile = None
+        self.receiver_phone = None
+        self.receiver_state = None
+        self.receiver_city = None
+        self.receiver_district = None
+        self.receiver_address = None
+        self.receiver_zip = None
+
+        self.method = 'taobao.trade.shippingaddress.update'
+        self.p = {}
+
+    def set_tid(self, tid):
+        self.tid = tid
+        self.p['tid'] = tid
+
+    def set_receiver_name(self, rec):
+        self.receiver_name = rec
+        self.p['receiver_name'] = rec
+
+    def set_receiver_mobile(self, rec):
+        self.receiver_mobile = rec
+        self.p['receiver_mobile'] = rec
+
+    def set_receiver_phone(self, rec):
+        self.receiver_phone = rec
+        self.p['receiver_phone'] = rec
+
+    def set_receiver_state(self, rec):
+        self.receiver_state = rec
+        self.p['receiver_state'] = rec
+
+    def set_receiver_city(self, rec):
+        self.receiver_city = rec
+        self.p['receiver_city'] = rec
+
+    def set_receiver_district(self, rec):
+        self.receiver_district = rec
+        self.p['receiver_district'] = rec
+
+    def set_receiver_address(self, rec):
+        self.receiver_address = rec
+        self.p['receiver_address'] = rec
+
+    def set_receiver_zip(self, rec):
+        self.receiver_zip = rec
+        self.p['receiver_zip'] = rec
