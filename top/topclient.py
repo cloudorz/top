@@ -130,8 +130,10 @@ class TopClient(object):
 
         # 发送请求
         form_dict = urllib.urlencode(dict((k, v.encode('utf-8')) for k,v in self.req_params().items()))
+        url = urllib2.Request(self.base_url)
+
         try:
-            req = urllib2.urlopen(self.base_url, form_dict)
+            req = urllib2.urlopen(url, form_dict)
         except urllib2.HTTPError, e:
             self.log_error('have some error in req/resp')
 

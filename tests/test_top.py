@@ -1,8 +1,8 @@
 # coding: utf-8
 
-import sys, unittest, pprint, datetime
+import sys, os, unittest, pprint, datetime
 
-sys.path.append('/Users/cloud/mywork/webdev/top')
+sys.path.append(os.path.join(os.environ['HOME'], 'mywork/webdev/top'))
 from top import *
 
 c = TopClient(key='12225810', secret='f8f8eff13f26d2882d9da483ccc0f36e')
