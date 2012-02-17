@@ -15,4 +15,7 @@ Usage:
     request.set_nick('mydewdew')
     reqeust.set_fields('user_id,nick,sex,locaiton')
     data = client.execute(request)
+
+    TODO: 
+        1. 简化
     

@@ -1,6 +1,15 @@
+README
 setup.cfg
 setup.py
 top/__init__.py
+top/appstore.py
+top/item.py
+top/parsexml.py
+top/request.py
+top/shipping.py
+top/topclient.py
+top/trade.py
+top/user.py
 top.egg-info/PKG-INFO
 top.egg-info/SOURCES.txt
 top.egg-info/dependency_links.txt

@@ -32,7 +32,7 @@ class TopClient(object):
         self.logger = logger or logging.getLogger()
         self.config_logger()
 
-    def generate_sign(self, params):
+    def _sign(self, params):
         ''' generate sign
         '''
         for k,v in params.items():
@@ -126,7 +126,7 @@ class TopClient(object):
             self.sys_params['session'] = session
 
         # 签名
-        self.sys_params['sign'] = self.generate_sign(self.req_params())
+        self.sys_params['sign'] = self._sign(self.req_params())
 
         # 发送请求
         form_dict = urllib.urlencode(dict((k, v.encode('utf-8')) for k,v in self.req_params().items()))
